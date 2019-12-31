@@ -1,0 +1,24 @@
+<ul class="sidebar-list" *ngFor="let facet of facets; let i = index">
+	<li class="sidebar-list-item" (click)="onCollapse(facet.facetName)">
+		<a class="sidebar-link" attr.aria-expanded="{{(collapseFacets | contains : facet.facetName)}}">{{facet.facetName | locale : i18nValues}}</a>
+	</li>
+	<ul id="collapse" class="sidebar-sublist" [@facetFadeInOut]="collapseFacets | facetAnimation : facet.facetName">	
+		<div class="_loop_primary_search" *ngIf="(facet.facetItems | length) > 6 && !(selectedFacetItems | objectContains : facet.facetName)">	
+	        <input type="search" [(ngModel)]="this['facet' + i]" placeholder="{{placeholder}}" id="primary_inputs-1" >	       	        
+	  	</div>        		  
+		<li *ngFor="let facetItem of facet.facetItems | facetContains : selectedFacetItems : facet.facetName : this['facet' + i] : limitFacets : i">
+			<a data-customlink="sf:body content" (click)="onSelectFacetItem(facet.facetName, facetItem.name); false" [ngClass]="{'disable-click': (selectedFacetItems | objectContains : facet.facetName)}">
+				<span class="sidebar-sublist-item">{{facetItem.label | resultsLabel : facetItem.name : locale}}&nbsp;</span>
+				<span class="list-item-num">({{facetItem.count}})</span>
+			</a>
+			<a class="remove-btn" *ngIf="selectedFacetItems | objectContains : facet.facetName" (click)="onDeselectFacetItem(facet.facetName); false">
+	  			<i class="fa fa-times-circle-o"></i>
+			</a>
+		</li>
+				
+		<li class="expand-link" *ngIf="(facet.facetItems | length) > 6 && !(selectedFacetItems | objectContains : facet.facetName)">
+			<a *ngIf="!(limitFacets | contains : i)" (click)="onSeeMore(i); false">{{seeMore | locale : i18nValues}}</a>
+			<a *ngIf="(limitFacets | contains : i)" (click)="onSeeLess(i); false">{{seeLess | locale : i18nValues}}</a>		
+		</li>
+	</ul>
+</ul>
